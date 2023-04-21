@@ -42,20 +42,28 @@ input.addEventListener('input', e => {
 
 function createGrid (parsedNum)
 {
-    deleteGrid()
+    deleteGrid();
     let p = document.querySelector('#warning');
     p.textContent = '';
     let sqrt = Math.sqrt(parsedNum);
-    console.log(sqrt);
     for (let i = 0; i < parsedNum; i++)
     {
-        div = document.createElement('div');
-        div.classList.add('grid');
-        div.textContent = 'hi';
-        div.style.width = `${90 / sqrt}vw`
-        div.style.height = `${70 / sqrt}vh`
-        container.appendChild(div);
+        row = document.createElement('row');
+        row.style.display = "flex";
+        row.style.flexDirection = "row";
+        row.style.flex = 'auto'
+        for (let j = 0; j < parsedNum; j++)
+        {
+            div = document.createElement('div');
+            div.classList.add('grid');
+            div.style.flex = '1 0 auto';
+            div.style.width = 'auto';
+            row.appendChild(div);
+
+        }
+        container.appendChild(row);
     }
+    hoverHighlight();
 }
 
 function deleteGrid ()
@@ -66,11 +74,41 @@ function deleteGrid ()
     }
 }
 
+function getRandomHex() {
+    r = Math.floor(Math.random()*255)
+    r = r.toString(16);
+    g = Math.floor(Math.random()*255)
+    g = g.toString(16);
+    b = Math.floor(Math.random()*255)
+    b = b.toString(16);
+    return (r+g+b);
+}
 
-let grid = document.querySelectorAll('.grid');
+function hoverHighlight()
+{
+    let grid = document.querySelectorAll('.grid');
 
-grid.forEach(cell => {
-    cell.addEventListener('mouseover', e => {
-        e.target.classList.add('hover');
+    grid.forEach(cell => {
+        cell.addEventListener('mouseover', e => {
+            if (e.target.style.backgroundColor)
+            {
+                if (e.target.style.filter)
+                {
+                    brightness = e.target.style.filter.slice(11,13);
+                    e.target.style.filter = `brightness(${brightness - 10}%)`;
+                    console.log(e.target.style.filter);
+                }
+                else
+                {
+                    e.target.style.filter = 'brightness(90%)';
+                }
+                
+            }
+            else
+            {
+            color = getRandomHex();
+            e.target.style.backgroundColor = `#${color}`;
+            }
+        });
     });
-});
+}
